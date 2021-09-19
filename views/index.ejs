@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" style="background-color: #f9f9f9;">
+<head>
+    <%- include('partials/head') %>
+</head>
+<body style="background-color: #f9f9f9;">
+    <header style="border: 1px solid rgb(249,249,249, 0.3); text-align:center; z-index: 1; position: sticky; top: 0; background-color: rgba( 249, 249, 249, 0.1); backdrop-filter: blur(15px);">
+        <div id="logo" style="padding: 45px 20px 10px;"><a href="/" class="logo" style="font: 900 49px asap,arial; color:#0186da; text-shadow: 0 2px 2px #ddd; ">YuTing</a></div>
+    </header>
+    
+    <div class="container">
+    <h1 style="font: bold 36px asap,arial; color: #505050; text-align:center;">Paste the URL to download</h1>
+    <form id="formID" onsubmit="return false;" class="my-4 form-inline">
+        <label for="fullUrl" class="sr-only">Url</label>
+        <input placeholder="Enter the link here" type="url" name="fullUrl" id="fullUrl" class="form-control col mr-2" required pattern="https?://.+" autocomplete="off">
+        <button id="submitID" class="btn btn-success" type="submit">Get</button>
+    </form>
+<div class="content">
+    <table class="table table-striped table-bordered table-sm">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Operate</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% shortUrls.forEach(shortUrl => { %> 
+            <% }) %>  
+        </tbody>
+    </table>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script async src="https://unpkg.com/sweetalert2/dist/sweetalert2.min.js"></script>
+<link async rel="stylesheet" href="https://unpkg.com/sweetalert2/dist/sweetalert2.min.css">
+<script src="https://cdn.rawgit.com/zenorocha/clipboard.js/v1.7.1/dist/clipboard.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+    var form = document.getElementById('formID');
+    var submitButton = document.getElementById('submitID');
+
+    form.addEventListener('submit', function() {
+
+        // Disable the submit button
+        submitButton.setAttribute('disabled', 'disabled');
+        submitButton.innerText = 'Sending...';
+        // Change the "Submit" text
+        submitButton.value = 'Please wait...';
+                
+    }, false);
+
+    $('#formID').submit(function(e){
+        e.preventDefault();
+        $.ajax({
+            url: '/shortUrls',
+            type: 'post',
+            data: $('#formID').serialize(),
+            success: function(res) {
+                // Whatever you want to do after the form is successfully submitted
+                swal.fire({
+                    icon: 'success',
+                    title: 'Get Success',
+                    text: "",
+                    timer: 2000,
+                    showConfirmButton: false
+                })
+                
+                submitButton.removeAttribute("disabled");
+                submitButton.innerText = 'Get';
+                $(".content").html(res);
+            },
+            error: function(res) {
+                // Whatever you want to do after the form is successfully submitted
+                swal.fire({
+                    icon: 'error',
+                    title: 'Get Error',
+                    text: "",
+                    timer: 2000,
+                    showConfirmButton: false
+                })
+                submitButton.removeAttribute("disabled");
+                submitButton.innerText = 'Get';
+            },
+        });
+    });
+</script>
+
+</body>
+</html>
